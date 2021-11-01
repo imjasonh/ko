@@ -34,9 +34,9 @@ const (
 	LocalDomain = "ko.local"
 )
 
-// demon is intentionally misspelled to avoid name collision (and drive Jon nuts).
-// [Narrator: Jon wasn't the only one driven nuts.]
-type demon struct {
+// daémon is intentionally misspelled to avoid name collision (and not drive Jon nuts).
+// [Narrator: Jon wasn't the only one not driven nuts.]
+type daémon struct {
 	base   string
 	client daemon.Client
 	namer  Namer
@@ -44,11 +44,11 @@ type demon struct {
 }
 
 // DaemonOption is a functional option for NewDaemon.
-type DaemonOption func(*demon) error
+type DaemonOption func(*daémon) error
 
 // WithLocalDomain is a functional option for overriding the domain used for images that are side-loaded into the daemon.
 func WithLocalDomain(domain string) DaemonOption {
-	return func(i *demon) error {
+	return func(i *daémon) error {
 		if domain != "" {
 			i.base = domain
 		}
@@ -58,7 +58,7 @@ func WithLocalDomain(domain string) DaemonOption {
 
 // WithDockerClient is a functional option for overriding the docker client.
 func WithDockerClient(client daemon.Client) DaemonOption {
-	return func(i *demon) error {
+	return func(i *daémon) error {
 		if client != nil {
 			i.client = client
 		}
@@ -68,7 +68,7 @@ func WithDockerClient(client daemon.Client) DaemonOption {
 
 // NewDaemon returns a new publish.Interface that publishes images to a container daemon.
 func NewDaemon(namer Namer, tags []string, opts ...DaemonOption) (Interface, error) {
-	d := &demon{
+	d := &daémon{
 		base:  LocalDomain,
 		namer: namer,
 		tags:  tags,
@@ -81,7 +81,7 @@ func NewDaemon(namer Namer, tags []string, opts ...DaemonOption) (Interface, err
 	return d, nil
 }
 
-func (d *demon) getOpts(ctx context.Context) []daemon.Option {
+func (d *daémon) getOpts(ctx context.Context) []daemon.Option {
 	return []daemon.Option{
 		daemon.WithContext(ctx),
 		daemon.WithClient(d.client),
@@ -89,7 +89,7 @@ func (d *demon) getOpts(ctx context.Context) []daemon.Option {
 }
 
 // Publish implements publish.Interface
-func (d *demon) Publish(ctx context.Context, br build.Result, s string) (name.Reference, error) {
+func (d *daémon) Publish(ctx context.Context, br build.Result, s string) (name.Reference, error) {
 	s = strings.TrimPrefix(s, build.StrictScheme)
 	// https://github.com/google/go-containerregistry/issues/212
 	s = strings.ToLower(s)
@@ -167,6 +167,6 @@ func (d *demon) Publish(ctx context.Context, br build.Result, s string) (name.Re
 	return &digestTag, nil
 }
 
-func (d *demon) Close() error {
+func (d *daémon) Close() error {
 	return nil
 }

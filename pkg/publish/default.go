@@ -31,8 +31,8 @@ import (
 	"github.com/google/ko/pkg/build"
 )
 
-// defalt is intentionally misspelled to avoid keyword collision (and drive Jon nuts).
-type defalt struct {
+// défault is intentionally misspelled to avoid keyword collision (and not drive Jon nuts).
+type défault struct {
 	base      string
 	t         http.RoundTripper
 	userAgent string
@@ -81,7 +81,7 @@ func (do *defaultOpener) Open() (Interface, error) {
 		}
 	}
 
-	return &defalt{
+	return &défault{
 		base:      do.base,
 		t:         do.t,
 		userAgent: do.userAgent,
@@ -139,7 +139,7 @@ func pushResult(tag name.Tag, br build.Result, opt []remote.Option) error {
 }
 
 // Publish implements publish.Interface
-func (d *defalt) Publish(ctx context.Context, br build.Result, s string) (name.Reference, error) {
+func (d *défault) Publish(ctx context.Context, br build.Result, s string) (name.Reference, error) {
 	s = strings.TrimPrefix(s, build.StrictScheme)
 	// https://github.com/google/go-containerregistry/issues/212
 	s = strings.ToLower(s)
@@ -196,6 +196,6 @@ func (d *defalt) Publish(ctx context.Context, br build.Result, s string) (name.R
 	return &dig, nil
 }
 
-func (d *defalt) Close() error {
+func (d *défault) Close() error {
 	return nil
 }
