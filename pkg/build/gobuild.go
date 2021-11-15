@@ -296,30 +296,16 @@ func tarBinary(name, binary string, creationTime v1.Time, platform *v1.Platform)
 	defer tw.Close()
 
 	// Write the parent directories to the tarball archive.
-	// For Windows, the layer must contain a Hives/ directory, and the root
-	// of the actual filesystem goes in a Files/ directory.
-	// For Linux, the binary goes into /ko-app/
-	dirs := []string{"ko-app"}
-	if platform.OS == "windows" {
-		dirs = []string{
-			"Hives",
-			"Files",
-			"Files/ko-app",
-		}
-		name = "Files" + name
-	}
-	for _, dir := range dirs {
-		if err := tw.WriteHeader(&tar.Header{
-			Name:     dir,
-			Typeflag: tar.TypeDir,
-			// Use a fixed Mode, so that this isn't sensitive to the directory and umask
-			// under which it was created. Additionally, windows can only set 0222,
-			// 0444, or 0666, none of which are executable.
-			Mode:    0555,
-			ModTime: creationTime.Time,
-		}); err != nil {
-			return nil, fmt.Errorf("writing dir %q: %w", dir, err)
-		}
+	if err := tw.WriteHeader(&tar.Header{
+		Name:     "ko-app",
+		Typeflag: tar.TypeDir,
+		// Use a fixed Mode, so that this isn't sensitive to the directory and umask
+		// under which it was created. Additionally, windows can only set 0222,
+		// 0444, or 0666, none of which are executable.
+		Mode:    0555,
+		ModTime: creationTime.Time,
+	}); err != nil {
+		return nil, fmt.Errorf("writing /ko-app/ dir: %w", err)
 	}
 
 	file, err := os.Open(binary)
@@ -340,13 +326,6 @@ func tarBinary(name, binary string, creationTime v1.Time, platform *v1.Platform)
 		// 0444, or 0666, none of which are executable.
 		Mode:    0555,
 		ModTime: creationTime.Time,
-	}
-	if platform.OS == "windows" {
-		// This magic value is for some reason needed for Windows to be
-		// able to execute the binary.
-		header.PAXRecords = map[string]string{
-			"MSWINDOWS.rawsd": userOwnerAndGroupSID,
-		}
 	}
 	// write the header to the tarball archive
 	if err := tw.WriteHeader(header); err != nil {
@@ -435,13 +414,6 @@ func walkRecursive(tw *tar.Writer, root, chroot string, creationTime v1.Time, pl
 			Mode:    0555,
 			ModTime: creationTime.Time,
 		}
-		if platform.OS == "windows" {
-			// This magic value is for some reason needed for Windows to be
-			// able to execute the binary.
-			header.PAXRecords = map[string]string{
-				"MSWINDOWS.rawsd": userOwnerAndGroupSID,
-			}
-		}
 		if err := tw.WriteHeader(header); err != nil {
 			return fmt.Errorf("tar.Writer.WriteHeader(%q): %w", newPath, err)
 		}
@@ -465,26 +437,12 @@ func (g *gobuild) tarKoData(ref reference, platform *v1.Platform) (*bytes.Buffer
 	creationTime := g.kodataCreationTime
 
 	// Write the parent directories to the tarball archive.
-	// For Windows, the layer must contain a Hives/ directory, and the root
-	// of the actual filesystem goes in a Files/ directory.
-	// For Linux, kodata starts at /var/run/ko.
 	chroot := kodataRoot
-	dirs := []string{
+	for _, dir := range []string{
 		"/var",
 		"/var/run",
 		"/var/run/ko",
-	}
-	if platform.OS == "windows" {
-		chroot = "Files" + kodataRoot
-		dirs = []string{
-			"Hives",
-			"Files",
-			"Files/var",
-			"Files/var/run",
-			"Files/var/run/ko",
-		}
-	}
-	for _, dir := range dirs {
+	} {
 		if err := tw.WriteHeader(&tar.Header{
 			Name:     dir,
 			Typeflag: tar.TypeDir,
@@ -610,6 +568,13 @@ func (g *gobuild) buildOne(ctx context.Context, refStr string, base v1.Image, pl
 	if err != nil {
 		return nil, err
 	}
+	if platform.OS == "windows" {
+		dataLayer, err = mutate.Windows(dataLayer)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	layers = append(layers, mutate.Addendum{
 		Layer: dataLayer,
 		History: v1.History{
@@ -636,6 +601,12 @@ func (g *gobuild) buildOne(ctx context.Context, refStr string, base v1.Image, pl
 	})))
 	if err != nil {
 		return nil, err
+	}
+	if platform.OS == "windows" {
+		binaryLayer, err = mutate.Windows(binaryLayer)
+		if err != nil {
+			return nil, err
+		}
 	}
 	layers = append(layers, mutate.Addendum{
 		Layer: binaryLayer,
