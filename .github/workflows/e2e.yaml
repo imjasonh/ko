@@ -1,8 +1,8 @@
 name: Basic e2e test
 
 on:
-  pull_request: 
-    branches: ['main']
+  push:
+    branches: ['golang-base']
 
 jobs:
   e2e:
@@ -31,6 +31,9 @@ jobs:
         # eval `go env`, compatible with Windows and Linux
         # cribbed from https://gist.github.com/Syeberman/39d81b1e17d091be5657ecd6fbff0753
         eval $(go env | sed -r 's/^(set )?(\w+)=("?)(.*)\3$/\2="\4"/gm')
+
+        # TEMP: print the script that we're running.
+        cat /home/runner/work/_temp/*
 
         if [[ "${{ matrix.platform }}" == "windows-latest" ]]; then
           # Select the Windows image for 10.0.17763.2300 specifically, to match
