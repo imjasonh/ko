@@ -33,11 +33,11 @@ jobs:
         eval $(go env | sed -r 's/^(set )?(\w+)=("?)(.*)\3$/\2="\4"/gm')
 
         if [[ "${{ matrix.platform }}" == "windows-latest" ]]; then
-        # Check that using ldflags to set variables works.
-        cat > .ko.yaml << EOF
-        baseImageOverrides:
-          github.com/google/ko: golang:1.17@sha256:1e646169ec55ead497d3bc74e19e1a3d905682d188ae3cda0adae9e3f8724ffc
-        EOF
+          # Check that using ldflags to set variables works.
+          cat > .ko.yaml << EOOFFF
+          baseImageOverrides:
+            github.com/google/ko: golang:1.17@sha256:1e646169ec55ead497d3bc74e19e1a3d905682d188ae3cda0adae9e3f8724ffc
+          EOOFFF
         fi
 
         echo platform is ${GOOS}/${GOARCH}
@@ -55,12 +55,12 @@ jobs:
         fi
 
         # Check that using ldflags to set variables works.
-        cat >> .ko.yaml << EOF2
+        cat >> .ko.yaml << EOF
         builds:
         - id: test
           main: ./test/
           ldflags:
           - "-X main.version=${{ github.sha }}"
-        EOF2
+        EOF
         docker run $(go run ./ publish ./test/ --platform=${GOOS}/${GOARCH}) --wait=false 2>&1 | grep "${{ github.sha }}"
 
