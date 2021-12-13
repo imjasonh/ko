@@ -2,7 +2,7 @@ name: Basic e2e test
 
 on:
   push:
-    branches: ['golang-base']
+    branches: ['golang-base-fork']
 
 jobs:
   e2e:
