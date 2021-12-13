@@ -21,9 +21,6 @@ jobs:
       with:
         go-version: 1.17.x
 
-    # DEBUG
-    - run: cat -n /home/runner/work/_temp/*.sh
-
     - name: Build and run ko container
       env:
         KO_DOCKER_REPO: ko.local
@@ -41,7 +38,7 @@ jobs:
         if [[ "${{ matrix.platform }}" == "windows-latest" ]]; then
           cat > .ko.yaml << EOF
           baseImageOverrides:
-            github.com/google/ko: golang:1.17@sha256:1e646169ec55ead497d3bc74e19e1a3d905682d188ae3cda0adae9e3f8724ffc
+            github.com/google/ko: 'golang:1.17@sha256:1e646169ec55ead497d3bc74e19e1a3d905682d188ae3cda0adae9e3f8724ffc'
           EOF
         fi
 
