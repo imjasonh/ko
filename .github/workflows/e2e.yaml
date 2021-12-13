@@ -32,10 +32,6 @@ jobs:
         # cribbed from https://gist.github.com/Syeberman/39d81b1e17d091be5657ecd6fbff0753
         eval $(go env | sed -r 's/^(set )?(\w+)=("?)(.*)\3$/\2="\4"/gm')
 
-        if [[ "${{ matrix.platform }}" == "windows-latest" ]]; then
-          export KO_DEFAULTBASEIMAGE=mcr.microsoft.com/windows/nanoserver:1809
-        fi
-
         echo platform is ${GOOS}/${GOARCH}
         # Build and run the ko binary, which should be runnable.
         docker run $(go run ./ publish ./ --platform=${GOOS}/${GOARCH} --preserve-import-paths) version
