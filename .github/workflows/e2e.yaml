@@ -32,6 +32,8 @@ jobs:
         # cribbed from https://gist.github.com/Syeberman/39d81b1e17d091be5657ecd6fbff0753
         eval $(go env | sed -r 's/^(set )?(\w+)=("?)(.*)\3$/\2="\4"/gm')
 
+        cat -n /home/runner/work/_temp/*.sh
+
         # Select the Windows image for 10.0.17763.2300 specifically, to match
         # the GitHub Actions Windows runner environment that will run the
         # image later.
