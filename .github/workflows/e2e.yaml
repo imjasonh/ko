@@ -35,11 +35,8 @@ jobs:
         if [[ "${{ matrix.platform }}" == "windows-latest" ]]; then
         # Check that using ldflags to set variables works.
         cat > .ko.yaml << EOOFFF
-        builds:
-        - id: test
-          main: ./test/
-          ldflags:
-          - "-X main.version=${{ github.sha }}"
+        baseImageOverrides:
+          github.com/google/ko: golang:1.17@sha256:1e646169ec55ead497d3bc74e19e1a3d905682d188ae3cda0adae9e3f8724ffc
         EOOFFF
         fi
 
@@ -58,7 +55,7 @@ jobs:
         fi
 
         # Check that using ldflags to set variables works.
-        cat > .ko.yaml << EOF
+        cat >> .ko.yaml << EOF
         builds:
         - id: test
           main: ./test/
