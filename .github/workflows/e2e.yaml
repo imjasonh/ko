@@ -1,8 +1,8 @@
 name: Basic e2e test
 
 on:
-  pull_request: 
-    branches: ['main']
+  push:
+    branches: ['golang-base-fork']
 
 jobs:
   e2e:
