@@ -32,6 +32,16 @@ jobs:
         # cribbed from https://gist.github.com/Syeberman/39d81b1e17d091be5657ecd6fbff0753
         eval $(go env | sed -r 's/^(set )?(\w+)=("?)(.*)\3$/\2="\4"/gm')
 
+        if [[ "${{ matrix.platform }}" == "windows-latest" ]]; then
+          # Select the Windows image for 10.0.17763.2300 specifically, to match
+          # the GitHub Actions Windows runner environment that will run the
+          # image later.
+          cat > .ko.yaml << EOF
+          baseImageOverrides:
+            github.com/google/ko: golang:1.17@sha256:1e646169ec55ead497d3bc74e19e1a3d905682d188ae3cda0adae9e3f8724ffc
+          EOF
+        fi
+
         echo platform is ${GOOS}/${GOARCH}
         # Build and run the ko binary, which should be runnable.
         docker run $(go run ./ publish ./ --platform=${GOOS}/${GOARCH} --preserve-import-paths) version
