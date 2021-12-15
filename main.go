@@ -22,7 +22,10 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/google/go-containerregistry/pkg/authn/k8schain"
+	_ "github.com/google/go-containerregistry/pkg/authn/k8schain"
 	"github.com/google/go-containerregistry/pkg/logs"
+	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/ko/pkg/commands"
 )
 
@@ -35,4 +38,8 @@ func main() {
 	if err := commands.Root.ExecuteContext(ctx); err != nil {
 		log.Fatal("error during command execution:", err)
 	}
+
+	auth, _ := k8schain.NewInCluster(ctx, k8schain.Options{}).Resolve(name.MustParseReference("gcr.io/foo/bar"))
+	ac, _ := auth.Authorization()
+	log.Println(ac.RegistryToken)
 }

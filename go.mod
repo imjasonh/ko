@@ -10,6 +10,7 @@ require (
 	github.com/go-training/helloworld v0.0.0-20200225145412-ba5f4379d78b
 	github.com/google/go-cmp v0.5.6
 	github.com/google/go-containerregistry v0.7.0
+	github.com/google/go-containerregistry/pkg/authn/k8schain v0.0.0-20211102215614-dd49079bb93d
 	github.com/mattmoor/dep-notify v0.0.0-20190205035814-a45dec370a17
 	github.com/opencontainers/image-spec v1.0.2-0.20210730191737-8e42a01fb1b7
 	github.com/sigstore/cosign v1.3.2-0.20211120003522-90e2dcfe7b92
