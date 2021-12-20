@@ -23,7 +23,7 @@ import (
 
 	"github.com/google/go-containerregistry/pkg/crane"
 
-	"github.com/google/ko/pkg/commands/options"
+	"github.com/google/ko/internal/commands/options"
 )
 
 func TestOverrideDefaultBaseImageUsingBuildOption(t *testing.T) {

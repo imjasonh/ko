@@ -36,9 +36,9 @@ import (
 	"gopkg.in/yaml.v3"
 	"k8s.io/apimachinery/pkg/labels"
 
+	"github.com/google/ko/internal/commands/options"
 	ipublish "github.com/google/ko/internal/publish"
 	"github.com/google/ko/pkg/build"
-	"github.com/google/ko/pkg/commands/options"
 	"github.com/google/ko/pkg/publish"
 	"github.com/google/ko/pkg/publish/daemon"
 	"github.com/google/ko/pkg/publish/remote"

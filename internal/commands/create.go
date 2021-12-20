@@ -23,7 +23,7 @@ import (
 	"strings"
 
 	"github.com/google/ko/internal"
-	"github.com/google/ko/pkg/commands/options"
+	"github.com/google/ko/internal/commands/options"
 	"github.com/spf13/cobra"
 	"golang.org/x/sync/errgroup"
 )

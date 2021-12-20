@@ -24,8 +24,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/google/ko/internal/commands/options"
 	"github.com/google/ko/pkg/build"
-	"github.com/google/ko/pkg/commands/options"
 )
 
 func TestPublishImages(t *testing.T) {
