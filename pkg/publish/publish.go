@@ -17,6 +17,8 @@ package publish
 import (
 	"github.com/google/ko/internal/publish"
 	"github.com/google/ko/pkg/publish/daemon"
+	"github.com/google/ko/pkg/publish/kind"
+	"github.com/google/ko/pkg/publish/layout"
 	"github.com/google/ko/pkg/publish/remote"
 	"github.com/google/ko/pkg/publish/tarball"
 )
@@ -30,6 +32,7 @@ type Namer publish.Namer
 
 /// Remote types and methods.
 
+// Deprecated: Use remote.New instead.
 var NewDefault = remote.New
 
 type Option remote.Option
@@ -45,14 +48,28 @@ var Insecure = remote.Insecure
 
 /// Daemon types and methods.
 
+// Deprecated: use daemon.New instead.
+var NewDaemon = daemon.New
+
 type DaemonOption daemon.Option
 
 const LocalDomain = daemon.LocalDomain
 
 var WithLocalDomain = daemon.WithLocalDomain
 var WithDockerClient = daemon.WithDockerClient
-var NewDaemon = daemon.New
 
 /// Tarball types and methods.
 
+// Deprecated: Use tarball.New instead.
 var NewTarball = tarball.New
+
+/// Layout types and methods.
+
+// Deprecated: use layout.New instead.
+var NewLayout = layout.New
+
+/// Kind types and methods.
+
+var NewKindPublisher = kind.New
+
+const KindDomain = kind.Domain

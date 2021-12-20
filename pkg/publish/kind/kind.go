@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package publish
+package kind
 
 import (
 	"context"
@@ -23,22 +23,22 @@ import (
 
 	"github.com/google/go-containerregistry/pkg/name"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
+	"github.com/google/ko/internal/publish"
 	"github.com/google/ko/pkg/build"
-	"github.com/google/ko/pkg/publish/kind"
 )
 
 const (
-	// KindDomain is a sentinel "registry" that represents side-loading images into kind nodes.
-	KindDomain = "kind.local"
+	// Domain is a sentinel "registry" that represents side-loading images into kind nodes.
+	Domain = "kind.local"
 )
 
 type kindPublisher struct {
-	namer Namer
+	namer publish.Namer
 	tags  []string
 }
 
-// NewKindPublisher returns a new publish.Interface that loads images into kind nodes.
-func NewKindPublisher(namer Namer, tags []string) Interface {
+// New returns a new publish.Interface that loads images into kind nodes.
+func New(namer publish.Namer, tags []string) publish.Interface {
 	return &kindPublisher{
 		namer: namer,
 		tags:  tags,
@@ -96,25 +96,25 @@ func (t *kindPublisher) Publish(ctx context.Context, br build.Result, s string) 
 		return nil, err
 	}
 
-	digestTag, err := name.NewTag(fmt.Sprintf("%s:%s", t.namer(KindDomain, s), h.Hex))
+	digestTag, err := name.NewTag(fmt.Sprintf("%s:%s", t.namer(Domain, s), h.Hex))
 	if err != nil {
 		return nil, err
 	}
 
 	log.Printf("Loading %v", digestTag)
-	if err := kind.Write(ctx, digestTag, img); err != nil {
+	if err := Write(ctx, digestTag, img); err != nil {
 		return nil, err
 	}
 	log.Printf("Loaded %v", digestTag)
 
 	for _, tagName := range t.tags {
 		log.Printf("Adding tag %v", tagName)
-		tag, err := name.NewTag(fmt.Sprintf("%s:%s", t.namer(KindDomain, s), tagName))
+		tag, err := name.NewTag(fmt.Sprintf("%s:%s", t.namer(Domain, s), tagName))
 		if err != nil {
 			return nil, err
 		}
 
-		if err := kind.Tag(ctx, digestTag, tag); err != nil {
+		if err := Tag(ctx, digestTag, tag); err != nil {
 			return nil, err
 		}
 		log.Printf("Added tag %v", tagName)

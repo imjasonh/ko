@@ -41,6 +41,7 @@ import (
 	"github.com/google/ko/pkg/build"
 	"github.com/google/ko/pkg/publish"
 	"github.com/google/ko/pkg/publish/daemon"
+	"github.com/google/ko/pkg/publish/kind"
 	"github.com/google/ko/pkg/publish/remote"
 	"github.com/google/ko/pkg/publish/tarball"
 	"github.com/google/ko/pkg/resolve"
@@ -174,7 +175,7 @@ func makePublisher(po *options.PublishOptions) (publish.Interface, error) {
 	innerPublisher, err := func() (publish.Interface, error) {
 		repoName := po.DockerRepo
 		namer := options.MakeNamer(po)
-		if repoName == publish.LocalDomain || po.Local {
+		if repoName == daemon.LocalDomain || po.Local {
 			// TODO(jonjohnsonjr): I'm assuming that nobody will
 			// use local with other publishers, but that might
 			// not be true.
@@ -183,8 +184,8 @@ func makePublisher(po *options.PublishOptions) (publish.Interface, error) {
 				publish.WithLocalDomain(po.LocalDomain),
 			)
 		}
-		if repoName == publish.KindDomain {
-			return publish.NewKindPublisher(namer, po.Tags), nil
+		if repoName == kind.Domain {
+			return publish.NewKindPublisher(ipublish.Namer(namer), po.Tags), nil
 		}
 
 		if repoName == "" {

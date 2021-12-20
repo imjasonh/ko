@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package publish
+package layout
 
 import (
 	"context"
@@ -37,7 +37,7 @@ func TestLayout(t *testing.T) {
 	}
 	defer os.RemoveAll(tmp)
 
-	lp, err := NewLayout(tmp)
+	lp, err := New(tmp)
 	if err != nil {
 		t.Errorf("NewLayout() = %v", err)
 	}

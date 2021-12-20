@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package publish
+package layout
 
 import (
 	"context"
@@ -24,6 +24,7 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/empty"
 	"github.com/google/go-containerregistry/pkg/v1/layout"
 	"github.com/google/go-containerregistry/pkg/v1/types"
+	"github.com/google/ko/internal/publish"
 	"github.com/google/ko/pkg/build"
 )
 
@@ -31,8 +32,8 @@ type LayoutPublisher struct {
 	p layout.Path
 }
 
-// NewLayout returns a new publish.Interface that saves images to an OCI Image Layout.
-func NewLayout(path string) (Interface, error) {
+// New returns a new publish.Interface that saves images to an OCI Image Layout.
+func New(path string) (publish.Interface, error) {
 	p, err := layout.FromPath(path)
 	if err != nil {
 		p, err = layout.Write(path, empty.Index)
