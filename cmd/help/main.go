@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/google/ko/pkg/commands"
+	"github.com/google/ko/internal/commands"
 	"github.com/spf13/cobra"
 	"github.com/spf13/cobra/doc"
 )

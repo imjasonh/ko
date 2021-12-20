@@ -23,7 +23,7 @@ import (
 	"os"
 
 	"github.com/google/go-containerregistry/pkg/logs"
-	"github.com/google/ko/pkg/commands"
+	"github.com/google/ko/internal/commands"
 )
 
 const Deprecation258 = `NOTICE!
