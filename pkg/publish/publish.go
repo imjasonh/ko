@@ -15,20 +15,44 @@
 package publish
 
 import (
-	"context"
-
-	"github.com/google/go-containerregistry/pkg/name"
-	"github.com/google/ko/pkg/build"
+	"github.com/google/ko/internal/publish"
+	"github.com/google/ko/pkg/publish/daemon"
+	"github.com/google/ko/pkg/publish/remote"
+	"github.com/google/ko/pkg/publish/tarball"
 )
 
 // Interface abstracts different methods for publishing images.
-type Interface interface {
-	// Publish uploads the given build.Result to a registry incorporating the
-	// provided string into the image's repository name.  Returns the digest
-	// of the published image.
-	Publish(context.Context, build.Result, string) (name.Reference, error)
+type Interface publish.Interface
 
-	// Close exists for the tarball implementation so we can
-	// do the whole thing in one write.
-	Close() error
-}
+// Namer is a function from a supported import path to the portion of the resulting
+// image name that follows the "base" repository name.
+type Namer publish.Namer
+
+/// Remote types and methods.
+
+var NewDefault = remote.New
+
+type Option remote.Option
+
+var WithTransport = remote.WithTransport
+var WithUserAgent = remote.WithUserAgent
+var WithAuth = remote.WithAuth
+var WithAuthFromKeychain = remote.WithAuthFromKeychain
+var WithNamer = remote.WithNamer
+var WithTags = remote.WithTags
+var WithTagOnly = remote.WithTagOnly
+var Insecure = remote.Insecure
+
+/// Daemon types and methods.
+
+type DaemonOption daemon.Option
+
+const LocalDomain = daemon.LocalDomain
+
+var WithLocalDomain = daemon.WithLocalDomain
+var WithDockerClient = daemon.WithDockerClient
+var NewDaemon = daemon.New
+
+/// Tarball types and methods.
+
+var NewTarball = tarball.New

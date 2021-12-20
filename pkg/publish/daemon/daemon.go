@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package publish
+package daemon
 
 import (
 	"context"
@@ -26,6 +26,7 @@ import (
 	"github.com/google/go-containerregistry/pkg/name"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/google/go-containerregistry/pkg/v1/daemon"
+	"github.com/google/ko/internal/publish"
 	"github.com/google/ko/pkg/build"
 )
 
@@ -39,15 +40,15 @@ const (
 type demon struct {
 	base   string
 	client daemon.Client
-	namer  Namer
+	namer  publish.Namer
 	tags   []string
 }
 
-// DaemonOption is a functional option for NewDaemon.
-type DaemonOption func(*demon) error
+// Option is a functional option for NewDaemon.
+type Option func(*demon) error
 
 // WithLocalDomain is a functional option for overriding the domain used for images that are side-loaded into the daemon.
-func WithLocalDomain(domain string) DaemonOption {
+func WithLocalDomain(domain string) Option {
 	return func(i *demon) error {
 		if domain != "" {
 			i.base = domain
@@ -57,7 +58,7 @@ func WithLocalDomain(domain string) DaemonOption {
 }
 
 // WithDockerClient is a functional option for overriding the docker client.
-func WithDockerClient(client daemon.Client) DaemonOption {
+func WithDockerClient(client daemon.Client) Option {
 	return func(i *demon) error {
 		if client != nil {
 			i.client = client
@@ -66,8 +67,8 @@ func WithDockerClient(client daemon.Client) DaemonOption {
 	}
 }
 
-// NewDaemon returns a new publish.Interface that publishes images to a container daemon.
-func NewDaemon(namer Namer, tags []string, opts ...DaemonOption) (Interface, error) {
+// New returns a new publish.Interface that publishes images to a container daemon.
+func New(namer publish.Namer, tags []string, opts ...Option) (publish.Interface, error) {
 	d := &demon{
 		base:  LocalDomain,
 		namer: namer,

@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package publish_test
+package daemon_test
 
 import (
 	"context"

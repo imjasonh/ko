@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package publish
+package remote
 
 import (
 	"crypto/tls"
@@ -22,6 +22,7 @@ import (
 
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
+	"github.com/google/ko/internal/publish"
 )
 
 // WithTransport is a functional option for overriding the default transport
@@ -80,7 +81,7 @@ func WithAuthFromKeychain(keys authn.Keychain) Option {
 
 // WithNamer is a functional option for overriding the image naming behavior
 // in our default publisher.
-func WithNamer(n Namer) Option {
+func WithNamer(n publish.Namer) Option {
 	return func(i *defaultOpener) error {
 		i.namer = n
 		return nil

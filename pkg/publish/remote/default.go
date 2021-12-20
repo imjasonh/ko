@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package publish
+package remote
 
 import (
 	"context"
@@ -32,6 +32,7 @@ import (
 	ociremote "github.com/sigstore/cosign/pkg/oci/remote"
 	"github.com/sigstore/cosign/pkg/oci/walk"
 
+	"github.com/google/ko/internal/publish"
 	"github.com/google/ko/pkg/build"
 )
 
@@ -41,13 +42,13 @@ type defalt struct {
 	t         http.RoundTripper
 	userAgent string
 	auth      authn.Authenticator
-	namer     Namer
+	namer     publish.Namer
 	tags      []string
 	tagOnly   bool
 	insecure  bool
 }
 
-// Option is a functional option for NewDefault.
+// Option is a functional option for New.
 type Option func(*defaultOpener) error
 
 type defaultOpener struct {
@@ -55,15 +56,11 @@ type defaultOpener struct {
 	t         http.RoundTripper
 	userAgent string
 	auth      authn.Authenticator
-	namer     Namer
+	namer     publish.Namer
 	tags      []string
 	tagOnly   bool
 	insecure  bool
 }
-
-// Namer is a function from a supported import path to the portion of the resulting
-// image name that follows the "base" repository name.
-type Namer func(string, string) string
 
 // identity is the default namer, so import paths are affixed as-is under the repository
 // name for maximum clarity, e.g.
@@ -75,7 +72,7 @@ func identity(base, in string) string { return path.Join(base, in) }
 // is the 'latest' tag.
 var defaultTags = []string{"latest"}
 
-func (do *defaultOpener) Open() (Interface, error) {
+func (do *defaultOpener) Open() (publish.Interface, error) {
 	if do.tagOnly {
 		if len(do.tags) != 1 {
 			return nil, errors.New("must specify exactly one tag to resolve images into tag-only references")
@@ -97,9 +94,9 @@ func (do *defaultOpener) Open() (Interface, error) {
 	}, nil
 }
 
-// NewDefault returns a new publish.Interface that publishes references under the provided base
+// New returns a new publish.Interface that publishes references under the provided base
 // repository using the default keychain to authenticate and the default naming scheme.
-func NewDefault(base string, options ...Option) (Interface, error) {
+func New(base string, options ...Option) (publish.Interface, error) {
 	do := &defaultOpener{
 		base:      base,
 		t:         http.DefaultTransport,

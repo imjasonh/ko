@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package publish
+package tarball
 
 import (
 	"context"
@@ -23,19 +23,20 @@ import (
 	"github.com/google/go-containerregistry/pkg/name"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/google/go-containerregistry/pkg/v1/tarball"
+	"github.com/google/ko/internal/publish"
 	"github.com/google/ko/pkg/build"
 )
 
 type tar struct {
 	file  string
 	base  string
-	namer Namer
+	namer publish.Namer
 	tags  []string
 	refs  map[name.Reference]v1.Image
 }
 
-// NewTarball returns a new publish.Interface that saves images to a tarball.
-func NewTarball(file, base string, namer Namer, tags []string) Interface {
+// New returns a new publish.Interface that saves images to a tarball.
+func New(file, base string, namer publish.Namer, tags []string) publish.Interface {
 	return &tar{
 		file:  file,
 		base:  base,
@@ -79,7 +80,7 @@ func (t *tar) Publish(_ context.Context, br build.Result, s string) (name.Refere
 	}
 
 	ref := fmt.Sprintf("%s@%s", t.namer(t.base, s), h)
-	if len(t.tags) == 1 && t.tags[0] != defaultTags[0] {
+	if len(t.tags) == 1 && t.tags[0] != "latest" {
 		// If a single tag is explicitly set (not latest), then this
 		// is probably a release, so include the tag in the reference.
 		ref = fmt.Sprintf("%s:%s@%s", t.namer(t.base, s), t.tags[0], h)
