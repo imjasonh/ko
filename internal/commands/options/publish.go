@@ -23,7 +23,6 @@ import (
 	"path"
 
 	"github.com/google/go-containerregistry/pkg/v1/daemon"
-	ipublish "github.com/google/ko/internal/publish"
 	"github.com/google/ko/pkg/publish"
 	"github.com/spf13/cobra"
 )
@@ -68,7 +67,7 @@ type PublishOptions struct {
 	Bare bool
 	// ImageNamer can be used to pass a custom image name function. When given
 	// PreserveImportPaths, BaseImportPaths, Bare has no effect.
-	ImageNamer ipublish.Namer
+	ImageNamer publish.Namer
 }
 
 func AddPublishArg(cmd *cobra.Command, po *PublishOptions) {

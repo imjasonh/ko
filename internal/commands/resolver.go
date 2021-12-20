@@ -37,7 +37,6 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 
 	"github.com/google/ko/internal/commands/options"
-	ipublish "github.com/google/ko/internal/publish"
 	"github.com/google/ko/pkg/build"
 	"github.com/google/ko/pkg/publish"
 	"github.com/google/ko/pkg/publish/daemon"
@@ -179,13 +178,13 @@ func makePublisher(po *options.PublishOptions) (publish.Interface, error) {
 			// TODO(jonjohnsonjr): I'm assuming that nobody will
 			// use local with other publishers, but that might
 			// not be true.
-			return daemon.New(ipublish.Namer(namer), po.Tags,
+			return daemon.New(namer, po.Tags,
 				publish.WithDockerClient(po.DockerClient),
 				publish.WithLocalDomain(po.LocalDomain),
 			)
 		}
 		if repoName == kind.Domain {
-			return publish.NewKindPublisher(ipublish.Namer(namer), po.Tags), nil
+			return publish.NewKindPublisher(namer, po.Tags), nil
 		}
 
 		if repoName == "" {
@@ -206,7 +205,7 @@ func makePublisher(po *options.PublishOptions) (publish.Interface, error) {
 			publishers = append(publishers, lp)
 		}
 		if po.TarballFile != "" {
-			tp := tarball.New(po.TarballFile, repoName, ipublish.Namer(namer), po.Tags)
+			tp := tarball.New(po.TarballFile, repoName, namer, po.Tags)
 			publishers = append(publishers, tp)
 		}
 		userAgent := ua()
@@ -217,7 +216,7 @@ func makePublisher(po *options.PublishOptions) (publish.Interface, error) {
 			dp, err := remote.New(repoName,
 				publish.WithUserAgent(userAgent),
 				publish.WithAuthFromKeychain(authn.DefaultKeychain),
-				publish.WithNamer(ipublish.Namer(namer)),
+				publish.WithNamer(namer),
 				publish.WithTags(po.Tags),
 				publish.WithTagOnly(po.TagOnly),
 				publish.Insecure(po.InsecureRegistry))

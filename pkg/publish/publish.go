@@ -24,18 +24,18 @@ import (
 )
 
 // Interface abstracts different methods for publishing images.
-type Interface publish.Interface
+type Interface = publish.Interface
 
 // Namer is a function from a supported import path to the portion of the resulting
 // image name that follows the "base" repository name.
-type Namer publish.Namer
+type Namer = publish.Namer
 
 /// Remote types and methods.
 
 // Deprecated: Use remote.New instead.
 var NewDefault = remote.New
 
-type Option remote.Option
+type Option = remote.Option
 
 var WithTransport = remote.WithTransport
 var WithUserAgent = remote.WithUserAgent
@@ -51,7 +51,7 @@ var Insecure = remote.Insecure
 // Deprecated: use daemon.New instead.
 var NewDaemon = daemon.New
 
-type DaemonOption daemon.Option
+type DaemonOption = daemon.Option
 
 const LocalDomain = daemon.LocalDomain
 
