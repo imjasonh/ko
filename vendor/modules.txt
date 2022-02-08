@@ -1,25 +1,5 @@
 # cloud.google.com/go v0.99.0
 cloud.google.com/go/compute/metadata
-# github.com/Azure/azure-sdk-for-go v55.8.0+incompatible
-github.com/Azure/azure-sdk-for-go/services/preview/containerregistry/runtime/2019-08-15-preview/containerregistry
-github.com/Azure/azure-sdk-for-go/version
-# github.com/Azure/go-autorest v14.2.0+incompatible
-github.com/Azure/go-autorest
-# github.com/Azure/go-autorest/autorest v0.11.19
-github.com/Azure/go-autorest/autorest
-github.com/Azure/go-autorest/autorest/azure
-# github.com/Azure/go-autorest/autorest/adal v0.9.13
-github.com/Azure/go-autorest/autorest/adal
-# github.com/Azure/go-autorest/autorest/azure/auth v0.5.8
-github.com/Azure/go-autorest/autorest/azure/auth
-# github.com/Azure/go-autorest/autorest/azure/cli v0.4.2
-github.com/Azure/go-autorest/autorest/azure/cli
-# github.com/Azure/go-autorest/autorest/date v0.3.0
-github.com/Azure/go-autorest/autorest/date
-# github.com/Azure/go-autorest/logger v0.2.1
-github.com/Azure/go-autorest/logger
-# github.com/Azure/go-autorest/tracing v0.6.0
-github.com/Azure/go-autorest/tracing
 # github.com/BurntSushi/toml v0.4.1
 github.com/BurntSushi/toml
 github.com/BurntSushi/toml/internal
@@ -104,9 +84,6 @@ github.com/awslabs/amazon-ecr-credential-helper/ecr-login/config
 github.com/awslabs/amazon-ecr-credential-helper/ecr-login/version
 # github.com/chrismellard/docker-credential-acr-env v0.0.0-20220119192733-fe33c00cee21
 ## explicit
-github.com/chrismellard/docker-credential-acr-env/pkg/credhelper
-github.com/chrismellard/docker-credential-acr-env/pkg/registry
-github.com/chrismellard/docker-credential-acr-env/pkg/token
 # github.com/containerd/containerd v1.5.9
 github.com/containerd/containerd/errdefs
 github.com/containerd/containerd/log
@@ -117,8 +94,6 @@ github.com/containerd/stargz-snapshotter/estargz
 github.com/containerd/stargz-snapshotter/estargz/errorutil
 # github.com/cpuguy83/go-md2man/v2 v2.0.1
 github.com/cpuguy83/go-md2man/v2/md2man
-# github.com/dimchansky/utfbom v1.1.1
-github.com/dimchansky/utfbom
 # github.com/docker/cli v20.10.12+incompatible
 github.com/docker/cli/cli/config
 github.com/docker/cli/cli/config/configfile
@@ -164,8 +139,6 @@ github.com/docker/go-units
 github.com/dprotaso/go-yit
 # github.com/evanphx/json-patch/v5 v5.5.0
 github.com/evanphx/json-patch/v5
-# github.com/form3tech-oss/jwt-go v3.2.5+incompatible
-github.com/form3tech-oss/jwt-go
 # github.com/fsnotify/fsnotify v1.5.1
 ## explicit
 github.com/fsnotify/fsnotify
@@ -227,6 +200,10 @@ github.com/google/go-containerregistry/pkg/v1/stream
 github.com/google/go-containerregistry/pkg/v1/tarball
 github.com/google/go-containerregistry/pkg/v1/types
 github.com/google/go-containerregistry/pkg/v1/validate
+# github.com/hashicorp/go-uuid v1.0.2
+github.com/hashicorp/go-uuid
+# github.com/hashicorp/go-version v1.3.0
+github.com/hashicorp/go-version
 # github.com/hashicorp/hcl v1.0.0
 github.com/hashicorp/hcl
 github.com/hashicorp/hcl/hcl/ast
@@ -251,6 +228,10 @@ github.com/klauspost/compress/zstd
 github.com/klauspost/compress/zstd/internal/xxhash
 # github.com/magiconair/properties v1.8.5
 github.com/magiconair/properties
+# github.com/manicminer/hamilton v0.0.0-00010101000000-000000000000 => github.com/simongottschlag/hamilton v0.3.1-0.20220207200020-abaab85cdea4
+github.com/manicminer/hamilton/auth
+github.com/manicminer/hamilton/environments
+github.com/manicminer/hamilton/services/containerregistry
 # github.com/mattmoor/dep-notify v0.0.0-20190205035814-a45dec370a17
 ## explicit
 github.com/mattmoor/dep-notify/pkg/graph
@@ -315,6 +296,9 @@ github.com/subosito/gotenv
 github.com/theupdateframework/go-tuf/encrypted
 # github.com/vbatts/tar-split v0.11.2
 github.com/vbatts/tar-split/archive/tar
+# github.com/xenitab/docker-credential-azure v0.0.0-20220207224320-24803e82a952
+## explicit
+github.com/xenitab/docker-credential-azure
 # golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 golang.org/x/crypto/internal/poly1305
 golang.org/x/crypto/internal/subtle
@@ -481,3 +465,4 @@ sigs.k8s.io/kind/pkg/internal/env
 sigs.k8s.io/kind/pkg/log
 # sigs.k8s.io/yaml v1.3.0
 sigs.k8s.io/yaml
+# github.com/manicminer/hamilton => github.com/simongottschlag/hamilton v0.3.1-0.20220207200020-abaab85cdea4

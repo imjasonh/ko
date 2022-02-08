@@ -2,9 +2,11 @@ module github.com/google/ko
 
 go 1.16
 
+replace github.com/manicminer/hamilton => github.com/simongottschlag/hamilton v0.3.1-0.20220207200020-abaab85cdea4
+
 require (
 	github.com/awslabs/amazon-ecr-credential-helper/ecr-login v0.0.0-20211215200129-69c85dc22db6
-	github.com/chrismellard/docker-credential-acr-env v0.0.0-20220119192733-fe33c00cee21
+	github.com/chrismellard/docker-credential-acr-env v0.0.0-20220119192733-fe33c00cee21 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.11.0
 	github.com/docker/docker v20.10.12+incompatible
 	github.com/dprotaso/go-yit v0.0.0-20191028211022-135eb7262960
@@ -18,6 +20,7 @@ require (
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.10.1
+	github.com/xenitab/docker-credential-azure v0.0.0-20220207224320-24803e82a952
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/tools v0.1.9
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b

@@ -27,7 +27,6 @@ import (
 
 	ecr "github.com/awslabs/amazon-ecr-credential-helper/ecr-login"
 	"github.com/awslabs/amazon-ecr-credential-helper/ecr-login/api"
-	"github.com/chrismellard/docker-credential-acr-env/pkg/credhelper"
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/authn/github"
 	"github.com/google/go-containerregistry/pkg/name"
@@ -35,6 +34,7 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/daemon"
 	"github.com/google/go-containerregistry/pkg/v1/google"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
+	acr "github.com/xenitab/docker-credential-azure"
 
 	"github.com/google/ko/pkg/build"
 	"github.com/google/ko/pkg/commands/options"
@@ -43,7 +43,7 @@ import (
 
 var (
 	amazonKeychain authn.Keychain = authn.NewKeychainFromHelper(ecr.ECRHelper{ClientFactory: api.DefaultClientFactory{}})
-	azureKeychain  authn.Keychain = authn.NewKeychainFromHelper(credhelper.NewACRCredentialsHelper())
+	azureKeychain  authn.Keychain = authn.NewKeychainFromHelper(acr.NewACRHelper(time.Minute, false))
 	keychain                      = authn.NewMultiKeychain(
 		authn.DefaultKeychain,
 		google.Keychain,
