@@ -286,6 +286,7 @@ github.com/sigstore/cosign/pkg/types
 # github.com/sigstore/sigstore v1.0.2-0.20211115214857-534e133ebf9d
 github.com/sigstore/sigstore/pkg/cryptoutils
 # github.com/sirupsen/logrus v1.8.1
+## explicit
 github.com/sirupsen/logrus
 # github.com/spf13/afero v1.6.0
 github.com/spf13/afero

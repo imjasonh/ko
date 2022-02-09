@@ -18,17 +18,21 @@ package main
 
 import (
 	"context"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
 
 	"github.com/google/go-containerregistry/pkg/logs"
 	"github.com/google/ko/pkg/commands"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
 	logs.Warn.SetOutput(os.Stderr)
 	logs.Progress.SetOutput(os.Stderr)
+
+	logrus.StandardLogger().Out = ioutil.Discard
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
