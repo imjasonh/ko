@@ -1833,6 +1833,8 @@ github.com/xeipuuv/gojsonschema v0.0.0-20180618132009-1d523034197f/go.mod h1:5yf
 github.com/xeipuuv/gojsonschema v1.2.0/go.mod h1:anYRn/JVcOK2ZgGU+IjEV4nwlhoK5sQluxsYJ78Id3Y=
 github.com/xenitab/docker-credential-azure v0.0.0-20220207224320-24803e82a952 h1:/UQizYqL1v21WCIqubEmbtLPEdafCffTTJO9+qVVLb8=
 github.com/xenitab/docker-credential-azure v0.0.0-20220207224320-24803e82a952/go.mod h1:oLLmNEMb7y+Dneg+eoqytP39S7nL83L8ia4LjQy0hX8=
+github.com/xenitab/docker-credential-azure v0.0.0-20220208215232-6094f4ffa1ac h1:/fRg34IGS8E7Yu3aDyYwWGnkD1Nna+a74EbQxRUzgoQ=
+github.com/xenitab/docker-credential-azure v0.0.0-20220208215232-6094f4ffa1ac/go.mod h1:oLLmNEMb7y+Dneg+eoqytP39S7nL83L8ia4LjQy0hX8=
 github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8/go.mod h1:HUYIGzjTL3rfEspMxjDjgmT5uz5wzYJKVo23qUhYTos=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778/go.mod h1:2MuV+tbUrU1zIOPMxZ5EncGwgmMJsa+9ucAQZXxsObs=

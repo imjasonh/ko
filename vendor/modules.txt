@@ -228,7 +228,8 @@ github.com/klauspost/compress/zstd
 github.com/klauspost/compress/zstd/internal/xxhash
 # github.com/magiconair/properties v1.8.5
 github.com/magiconair/properties
-# github.com/manicminer/hamilton v0.0.0-00010101000000-000000000000 => github.com/simongottschlag/hamilton v0.3.1-0.20220207200020-abaab85cdea4
+# github.com/manicminer/hamilton v0.41.1 => github.com/simongottschlag/hamilton v0.3.1-0.20220207200020-abaab85cdea4
+## explicit
 github.com/manicminer/hamilton/auth
 github.com/manicminer/hamilton/environments
 github.com/manicminer/hamilton/services/containerregistry
@@ -296,7 +297,7 @@ github.com/subosito/gotenv
 github.com/theupdateframework/go-tuf/encrypted
 # github.com/vbatts/tar-split v0.11.2
 github.com/vbatts/tar-split/archive/tar
-# github.com/xenitab/docker-credential-azure v0.0.0-20220207224320-24803e82a952
+# github.com/xenitab/docker-credential-azure v0.0.0-20220208215232-6094f4ffa1ac
 ## explicit
 github.com/xenitab/docker-credential-azure
 # golang.org/x/crypto v0.0.0-20210921155107-089bfa567519

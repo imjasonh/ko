@@ -43,7 +43,7 @@ import (
 
 var (
 	amazonKeychain authn.Keychain = authn.NewKeychainFromHelper(ecr.ECRHelper{ClientFactory: api.DefaultClientFactory{}})
-	azureKeychain  authn.Keychain = authn.NewKeychainFromHelper(acr.NewACRHelper(time.Minute, false))
+	azureKeychain  authn.Keychain = authn.NewKeychainFromHelper(acr.NewACRHelper())
 	keychain                      = authn.NewMultiKeychain(
 		authn.DefaultKeychain,
 		google.Keychain,
