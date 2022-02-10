@@ -7,7 +7,7 @@ on:
     branches: ['cyclonedx-ours-fork']
 
 jobs:
-  goversion-m:
+  go.version-m:
     name: Generate go version -m
     runs-on: ubuntu-latest
 
@@ -27,7 +27,7 @@ jobs:
       - name: Generate
         run: |
           img=$(go run ./ build ./)
-          go run ./ deps $img --sbom=goversion-m > gomod.txt
+          go run ./ deps $img --sbom=go.version-m > gomod.txt
 
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
