@@ -7,7 +7,7 @@ on:
     branches: ['cyclonedx-ours-fork']
 
 jobs:
-  go.version-m:
+  go-version-m:
     name: Generate go version -m
     runs-on: ubuntu-latest
 
