@@ -20,6 +20,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"log"
 	"strings"
 )
 
@@ -29,10 +30,12 @@ func bomRef(path, version string) string {
 
 func h1ToSHA256(s string) string {
 	if !strings.HasPrefix(s, "h1:") {
+		log.Printf("sum %q does not start with h1:", s)
 		return ""
 	}
 	b, err := base64.StdEncoding.DecodeString(s[3:])
 	if err != nil {
+		log.Printf("sum %q is not base64: %v", err)
 		return ""
 	}
 	return hex.EncodeToString(b)
