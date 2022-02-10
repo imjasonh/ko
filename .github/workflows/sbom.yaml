@@ -28,12 +28,7 @@ jobs:
         run: |
           img=$(go run ./ build ./)
           go run ./ deps $img --sbom=go.version-m > gomod.txt
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: gomod.txt
-          path: gomod.txt
+          cat gomod.txt
 
   cyclonedx:
     name: Validate CycloneDX SBOM
