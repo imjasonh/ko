@@ -2,7 +2,7 @@ name: image
 
 on:
   push:
-    branches: ['main']
+    branches: ['main', 'image-smoke-test']
   workflow_dispatch:
 
 permissions:
@@ -35,3 +35,13 @@ jobs:
               -a sha=${{ github.sha }} \
               -a run_id=${{ github.run_id }} \
               -a run_attempt=${{ github.run_attempt }}
+
+          # Use the newly built image to build the test image, load it into the
+          # local daemon, then run it to make sure that works.
+          docker run $(
+            docker run --rm \
+              -v /var/run/docker.sock:/var/run/docker.sock \
+              -v $(pwd):/workspace \
+              -w /workspace \
+              ${img} build ./test/ --local)
+           --wait=false
