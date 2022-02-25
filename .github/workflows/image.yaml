@@ -38,7 +38,7 @@ jobs:
 
           # Use the newly built image to build the test image, load it into the
           # local daemon, then run it to make sure that works.
-          docker run $(
+          docker run --rm $(
             docker run --rm \
               -v /var/run/docker.sock:/var/run/docker.sock \
               -v $(pwd):/workspace \
