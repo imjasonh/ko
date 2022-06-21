@@ -73,6 +73,15 @@ func WithTrimpath(v bool) Option {
 	}
 }
 
+// WithIncludeTZData is a functional option that controls whether timezone data
+// is embedded in the built binary.
+func WithIncludeTZData(v bool) Option {
+	return func(gbo *gobuildOpener) error {
+		gbo.includeTZdata = v
+		return nil
+	}
+}
+
 // WithConfig is a functional option for providing GoReleaser Build influenced
 // build settings for importpaths.
 //

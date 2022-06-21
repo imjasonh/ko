@@ -78,6 +78,7 @@ type gobuild struct {
 	sbom                 sbomber
 	disableOptimizations bool
 	trimpath             bool
+	includeTZdata        bool
 	buildConfigs         map[string]Config
 	platformMatcher      *platformMatcher
 	dir                  string
@@ -99,6 +100,7 @@ type gobuildOpener struct {
 	sbom                 sbomber
 	disableOptimizations bool
 	trimpath             bool
+	includeTZdata        bool
 	buildConfigs         map[string]Config
 	platforms            []string
 	labels               map[string]string
@@ -126,6 +128,7 @@ func (gbo *gobuildOpener) Open() (Interface, error) {
 		sbom:                 gbo.sbom,
 		disableOptimizations: gbo.disableOptimizations,
 		trimpath:             gbo.trimpath,
+		includeTZdata:        gbo.includeTZdata,
 		buildConfigs:         gbo.buildConfigs,
 		labels:               gbo.labels,
 		dir:                  gbo.dir,
@@ -675,6 +678,12 @@ func (g *gobuild) configForImportPath(ip string) Config {
 		// The `-trimpath` flag removes file system paths from the resulting binary, to aid reproducibility.
 		// Ref: https://pkg.go.dev/cmd/go#hdr-Compile_packages_and_dependencies
 		config.Flags = append(config.Flags, "-trimpath")
+	}
+	if g.includeTZdata {
+		// The `-timetzdata` flag embeds timezone data in the binary, so that
+		// binaries can depend on it even if the base image doesn't provide it.
+		// Ref: https://pkg.go.dev/time/tzdata
+		config.Flags = append(config.Flags, "-tags=timetzdata")
 	}
 
 	if g.disableOptimizations {

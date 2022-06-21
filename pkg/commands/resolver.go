@@ -107,7 +107,7 @@ func gobuildOptions(bo *options.BuildOptions) ([]build.Option, error) {
 	default: // "spdx"
 		opts = append(opts, build.WithSPDX(version()))
 	}
-	opts = append(opts, build.WithTrimpath(bo.Trimpath))
+	opts = append(opts, build.WithTrimpath(bo.Trimpath), build.WithIncludeTZData(bo.IncludeTZdata))
 	for _, lf := range bo.Labels {
 		parts := strings.SplitN(lf, "=", 2)
 		if len(parts) != 2 {

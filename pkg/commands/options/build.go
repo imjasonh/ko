@@ -60,6 +60,9 @@ type BuildOptions struct {
 	// `AddBuildOptions()` defaults this field to `true`.
 	Trimpath bool
 
+	// IncludeTZData controls whether timezone data is embedded in binaries built by `go build`.
+	IncludeTZdata bool
+
 	// BuildConfigs stores the per-image build config from `.ko.yaml`.
 	BuildConfigs map[string]build.Config
 }
@@ -76,6 +79,7 @@ func AddBuildOptions(cmd *cobra.Command, bo *BuildOptions) {
 	cmd.Flags().StringSliceVar(&bo.Labels, "image-label", []string{},
 		"Which labels (key=value) to add to the image.")
 	bo.Trimpath = true
+	bo.IncludeTZdata = true
 }
 
 // LoadConfig reads build configuration from defaults, environment variables, and the `.ko.yaml` config file.
