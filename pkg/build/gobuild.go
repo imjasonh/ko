@@ -20,6 +20,11 @@ import (
 	"archive/tar"
 	"bytes"
 	"context"
+	"crypto"
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	gb "go/build"
@@ -49,6 +54,7 @@ import (
 	"github.com/sigstore/cosign/pkg/oci/signed"
 	"github.com/sigstore/cosign/pkg/oci/static"
 	ctypes "github.com/sigstore/cosign/pkg/types"
+	"github.com/sigstore/sigstore/pkg/signature"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
 	"golang.org/x/tools/go/packages"
@@ -76,6 +82,7 @@ type gobuild struct {
 	kodataCreationTime   v1.Time
 	build                builder
 	sbom                 sbomber
+	sign                 bool
 	disableOptimizations bool
 	trimpath             bool
 	buildConfigs         map[string]Config
@@ -97,6 +104,7 @@ type gobuildOpener struct {
 	kodataCreationTime   v1.Time
 	build                builder
 	sbom                 sbomber
+	sign                 bool
 	disableOptimizations bool
 	trimpath             bool
 	buildConfigs         map[string]Config
@@ -819,6 +827,37 @@ func (g *gobuild) buildOne(ctx context.Context, refStr string, base v1.Image, pl
 			return nil, err
 		}
 		si, err = ocimutate.AttachFileToImage(si, "sbom", f)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if g.sign {
+		priv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+		if err != nil {
+			return nil, err
+		}
+		s, err := signature.LoadECDSASignerVerifier(priv, crypto.SHA256)
+		if err != nil {
+			return nil, err
+		}
+		pub, err := s.PublicKey()
+		if err != nil {
+			return nil, err
+		}
+		payloadBytes, err := io.ReadAll(payload)
+		if err != nil {
+			return nil, err
+		}
+		sig, err := s.SignMessage(bytes.NewReader(payloadBytes))
+		if err != nil {
+			return nil, err
+		}
+		b64sig := base64.StdEncoding.EncodeToString(sig)
+		ociSig, err := static.NewSignature(payloadBytes, b64sig)
+		if err != nil {
+			return nil, err
+		}
+		si, err = ocimutate.AttachSignatureToImage(si, ociSig)
 		if err != nil {
 			return nil, err
 		}

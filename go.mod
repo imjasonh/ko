@@ -25,6 +25,7 @@ require (
 	github.com/opencontainers/image-spec v1.0.3-0.20220114050600-8b9d41f48198
 	github.com/sigstore/cosign v1.9.0
 	github.com/sigstore/rekor v0.7.0 // indirect
+	github.com/sigstore/sigstore v1.2.1-0.20220512194100-3ed986cc9758
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.12.0
