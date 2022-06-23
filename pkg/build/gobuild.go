@@ -939,6 +939,7 @@ func (g *gobuild) Build(ctx context.Context, s string) (Result, error) {
 	if true {
 		//if g.sign {
 
+		// Generate an ephemeral private key.
 		priv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 		if err != nil {
 			return nil, err
@@ -962,18 +963,17 @@ func (g *gobuild) Build(ctx context.Context, s string) (Result, error) {
 			return nil, fmt.Errorf("getting ID token: %w", err)
 		}
 
-		// Sign the email address as part of the request
+		// Sign the email address as part of the request to Fulcio.
 		h := sha256.Sum256([]byte(tok.Subject))
 		proof, err := ecdsa.SignASN1(rand.Reader, priv, h[:])
 		if err != nil {
 			return nil, err
 		}
-
 		fulcioServer, err := neturl.Parse(fulcioURL)
 		if err != nil {
 			return nil, fmt.Errorf("creating Fulcio client: %w", err)
 		}
-		fclient := fapi.NewClient(fulcioServer)
+		fclient := fapi.NewClient(fulcioServer) // TODO: Do this once and share it.
 		fresp, err := fclient.SigningCert(fapi.CertificateRequest{
 			PublicKey: fapi.Key{
 				Algorithm: "ecdsa",
@@ -984,7 +984,6 @@ func (g *gobuild) Build(ctx context.Context, s string) (Result, error) {
 		if err != nil {
 			return nil, err
 		}
-
 		s, err := signature.LoadECDSASigner(priv, crypto.SHA256)
 		if err != nil {
 			return nil, fmt.Errorf("loading signer: %w", err)
