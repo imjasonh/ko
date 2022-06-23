@@ -24,6 +24,8 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/sha256"
+	"crypto/x509"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -31,6 +33,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	neturl "net/url"
 	"os"
 	"os/exec"
 	"path"
@@ -39,8 +42,11 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/containerd/stargz-snapshotter/estargz"
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 	"github.com/google/go-containerregistry/pkg/name"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/google/go-containerregistry/pkg/v1/empty"
@@ -54,6 +60,11 @@ import (
 	"github.com/sigstore/cosign/pkg/oci/signed"
 	"github.com/sigstore/cosign/pkg/oci/static"
 	ctypes "github.com/sigstore/cosign/pkg/types"
+	fapi "github.com/sigstore/fulcio/pkg/api"
+	rekor "github.com/sigstore/rekor/pkg/generated/client"
+	rentries "github.com/sigstore/rekor/pkg/generated/client/entries"
+	rmodels "github.com/sigstore/rekor/pkg/generated/models"
+	"github.com/sigstore/sigstore/pkg/oauthflow"
 	"github.com/sigstore/sigstore/pkg/signature"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
@@ -831,37 +842,6 @@ func (g *gobuild) buildOne(ctx context.Context, refStr string, base v1.Image, pl
 			return nil, err
 		}
 	}
-	if g.sign {
-		priv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-		if err != nil {
-			return nil, err
-		}
-		s, err := signature.LoadECDSASignerVerifier(priv, crypto.SHA256)
-		if err != nil {
-			return nil, err
-		}
-		pub, err := s.PublicKey()
-		if err != nil {
-			return nil, err
-		}
-		payloadBytes, err := io.ReadAll(payload)
-		if err != nil {
-			return nil, err
-		}
-		sig, err := s.SignMessage(bytes.NewReader(payloadBytes))
-		if err != nil {
-			return nil, err
-		}
-		b64sig := base64.StdEncoding.EncodeToString(sig)
-		ociSig, err := static.NewSignature(payloadBytes, b64sig)
-		if err != nil {
-			return nil, err
-		}
-		si, err = ocimutate.AttachSignatureToImage(si, ociSig)
-		if err != nil {
-			return nil, err
-		}
-	}
 	return si, nil
 }
 
@@ -955,6 +935,121 @@ func (g *gobuild) Build(ctx context.Context, s string) (Result, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	if true {
+		//if g.sign {
+
+		priv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+		if err != nil {
+			return nil, err
+		}
+
+		pubBytes, err := x509.MarshalPKIXPublicKey(&priv.PublicKey)
+		if err != nil {
+			return nil, err
+		}
+
+		// TODO: make these env vars
+		oidcIssuer := "https://oauth2.sigstore.dev/auth"
+		oidcClientID := "sigstore"
+		oidcClientSecret := ""
+		oidcRedirectURL := ""
+		fulcioURL := "https://fulcio.sigstore.dev"
+		fulcioTimeout := 10 * time.Second
+
+		tok, err := oauthflow.OIDConnect(oidcIssuer, oidcClientID, oidcClientSecret, oidcRedirectURL, oauthflow.DefaultIDTokenGetter)
+		if err != nil {
+			return nil, fmt.Errorf("getting ID token: %w", err)
+		}
+
+		// Sign the email address as part of the request
+		h := sha256.Sum256([]byte(tok.Subject))
+		proof, err := ecdsa.SignASN1(rand.Reader, priv, h[:])
+		if err != nil {
+			return nil, err
+		}
+
+		fulcioServer, err := neturl.Parse(fulcioURL)
+		if err != nil {
+			return nil, fmt.Errorf("creating Fulcio client: %w", err)
+		}
+		fclient := fapi.NewClient(fulcioServer)
+		fresp, err := fclient.SigningCert(fapi.CertificateRequest{
+			PublicKey: fapi.Key{
+				Algorithm: "ecdsa",
+				Content:   pubBytes,
+			},
+			SignedEmailAddress: proof,
+		}, tok.RawString)
+		if err != nil {
+			return nil, err
+		}
+
+		s, err := signature.LoadECDSASigner(priv, crypto.SHA256)
+		if err != nil {
+			return nil, fmt.Errorf("loading signer: %w", err)
+		}
+
+		// Record digest.
+		dig, err := res.Digest()
+		if err != nil {
+			return nil, err
+		}
+		certPEMBase64 := strfmt.Base64(fresp.CertPEM)
+		params := rentries.NewCreateLogEntryParams()
+		params.SetTimeout(fulcioTimeout)
+		params.SetProposedEntry(&rmodels.Hashedrekord{
+			APIVersion: swag.String("0.0.1"),
+			Spec: rmodels.HashedrekordV001Schema{
+				Data: &rmodels.HashedrekordV001SchemaData{
+					Hash: &rmodels.HashedrekordV001SchemaDataHash{
+						Algorithm: &dig.Algorithm,
+						Value:     &dig.Hex,
+					},
+				},
+				Signature: &rmodels.HashedrekordV001SchemaSignature{
+					PublicKey: &rmodels.HashedrekordV001SchemaSignaturePublicKey{
+						Content: certPEMBase64,
+					},
+				},
+			},
+		})
+		created, err := rekor.NewHTTPClient(nil).Entries.CreateLogEntry(params)
+		if err != nil {
+			return nil, fmt.Errorf("adding Rekor entry: %w", err)
+		}
+		log.Println("Rekor entry created!")
+		log.Printf("%+v", created) // TODO: print log entry, UUID, etc
+
+		payloadBytes := []byte(nil) // TODO: actual payload bytes
+
+		sig, err := s.SignMessage(bytes.NewReader(payloadBytes))
+		if err != nil {
+			return nil, err
+		}
+		b64sig := base64.StdEncoding.EncodeToString(sig)
+		ociSig, err := static.NewSignature(payloadBytes, b64sig)
+		if err != nil {
+			return nil, err
+		}
+		switch si := res.(type) {
+		case oci.SignedImage:
+			res, err = ocimutate.AttachSignatureToImage(si, ociSig)
+			if err != nil {
+				return nil, err
+			}
+		case oci.SignedImageIndex:
+			res, err = ocimutate.AttachSignatureToImageIndex(si, ociSig)
+			if err != nil {
+				return nil, err
+			}
+		default:
+			log.Printf("unexpected type %T", res)
+		}
+	}
+
+	// TODO(mattmoor): If we want to attach anything (e.g. attestations) at the image or index level, we would do it here!
+
 	return res, nil
 }
 
@@ -1033,8 +1128,6 @@ func (g *gobuild) buildAll(ctx context.Context, ref string, baseIndex v1.ImageIn
 			im.Annotations).(v1.ImageIndex),
 		adds...)
 
-	// TODO(mattmoor): If we want to attach anything (e.g. signatures, attestations, SBOM)
-	// at the index level, we would do it here!
 	return idx, nil
 }
 

@@ -16,6 +16,8 @@ require (
 	github.com/dprotaso/go-yit v0.0.0-20220510233725-9ba8df137936
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-openapi/analysis v0.21.3 // indirect
+	github.com/go-openapi/strfmt v0.21.2
+	github.com/go-openapi/swag v0.21.1
 	github.com/go-training/helloworld v0.0.0-20200225145412-ba5f4379d78b
 	github.com/golang-jwt/jwt/v4 v4.4.1 // indirect
 	github.com/google/go-cmp v0.5.8
@@ -24,7 +26,8 @@ require (
 	github.com/letsencrypt/boulder v0.0.0-20220525221457-11544756bbe8 // indirect
 	github.com/opencontainers/image-spec v1.0.3-0.20220114050600-8b9d41f48198
 	github.com/sigstore/cosign v1.9.0
-	github.com/sigstore/rekor v0.7.0 // indirect
+	github.com/sigstore/fulcio v0.1.2-0.20220114150912-86a2036f9bc7
+	github.com/sigstore/rekor v0.7.0
 	github.com/sigstore/sigstore v1.2.1-0.20220512194100-3ed986cc9758
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/pflag v1.0.5
