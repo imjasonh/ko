@@ -578,14 +578,6 @@ func walkRecursive(tw *tar.Writer, root, chroot string, creationTime v1.Time, pl
 		}
 		newPath := path.Join(chroot, filepath.ToSlash(hostPath[len(root):]))
 
-		// Don't chase symlinks on Windows, where cross-compiled symlink support is not possible.
-		if platform.OS == "windows" {
-			if info.Mode()&os.ModeSymlink != 0 {
-				log.Println("skipping symlink in kodata for windows:", info.Name())
-				return nil
-			}
-		}
-
 		evalPath, err := filepath.EvalSymlinks(hostPath)
 		if err != nil {
 			return fmt.Errorf("filepath.EvalSymlinks(%q): %w", hostPath, err)
